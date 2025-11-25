@@ -32,10 +32,34 @@ Cypress.Commands.add('getByDataCy', (selector) => {
   cy.get(`[data-cy="${selector}"]`);
 });
 
-Cypress.Commands.add('register', (email = 'riot@qa.team', username = 'riot', password = '12345Qwert!') => {
+Cypress.Commands.add('register', (
+  email = 'riot@qa.team',
+  username = 'riot',
+  password = '12345Qwert!'
+) => {
   cy.request('POST', '/users', {
     email,
     username,
     password
+  });
+});
+
+Cypress.Commands.add('createArticle', (article) => {
+  cy.request({
+    method: 'POST',
+    url: '/articles',
+    body: {
+      article: {
+        title: article.title,
+        description: article.about,
+        body: article.content,
+        tagList: article.tags || []
+      }
+    },
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }).then((response) => {
+    cy.visit(`/article/${response.body.article.slug}`);
   });
 });
