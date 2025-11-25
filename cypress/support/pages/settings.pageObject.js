@@ -2,31 +2,39 @@ import PageObject from './PageObject';
 
 class SettingsPageObject extends PageObject {
   get usernameField() {
-    return cy.getByDataCy('username-field');
+    return cy.getByDataQa('username-field');
   }
 
   get emailField() {
-    return cy.getByDataCy('email-field');
+    return cy.getByDataQa('email-field');
   }
 
   get bioField() {
-    return cy.getByDataCy('bio-field');
+    return cy.getByDataQa('bio-field');
   }
 
   get currentPasswordField() {
-    return cy.getByDataCy('current-password-field');
+    return cy.getByDataQa('current-password-field');
   }
 
   get newPasswordField() {
-    return cy.getByDataCy('new-password-field');
+    return cy.getByDataQa('new-password-field');
   }
 
   get updateSettingsButton() {
-    return cy.getByDataCy('update-settings-button');
+    return cy.getByDataQa('update-settings-button');
   }
 
   get logoutButton() {
-    return cy.getByDataCy('logout-button');
+    return cy.getByDataQa('logout-button');
+  }
+
+  get successMessage() {
+    return cy.getByDataQa('success-message');
+  }
+
+  get userHeader() {
+    return cy.getByDataQa('user-header');
   }
 
   typeUsername(username) {
@@ -39,22 +47,32 @@ class SettingsPageObject extends PageObject {
 
   typeBio(bio) {
     this.bioField.clear().type(bio);
+    return this;
   }
 
   typeCurrentPassword(password) {
     this.currentPasswordField.type(password);
+    return this;
   }
 
   typeNewPassword(password) {
     this.newPasswordField.type(password);
+    return this;
   }
 
   clickUpdateSettings() {
     this.updateSettingsButton.click();
+    return this;
   }
 
   clickLogout() {
     this.logoutButton.click();
+    return this;
+  }
+
+  visit() {
+    cy.visit('/settings');
+    return this;
   }
 }
 

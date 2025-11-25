@@ -9,12 +9,16 @@ const homePage = new HomePageObject();
 
 describe('Sign In page', () => {
   let user;
+  let wrongPassword;
 
   before(() => {
     cy.task('db:clear');
     cy.task('generateUser').then((generateUser) => {
       user = generateUser;
       cy.register(user.email, user.username, user.password);
+    });
+    cy.task('generateUser').then((generateUser) => {
+      wrongPassword = generateUser.password;
     });
   });
 
@@ -30,10 +34,10 @@ describe('Sign In page', () => {
   it('should not provide an ability to log in with wrong credentials', () => {
     signInPage.visit();
     signInPage.typeEmail(user.email);
-    signInPage.typePassword('wrongpassword');
+    signInPage.typePassword(wrongPassword);
     signInPage.clickSignInBtn();
 
-    cy.get('.error-messages')
+    signInPage.errorMessages
       .should('be.visible')
       .and('contain', 'email or password is invalid');
   });

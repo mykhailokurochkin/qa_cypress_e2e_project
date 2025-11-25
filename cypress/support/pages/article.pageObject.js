@@ -2,43 +2,52 @@ import PageObject from './PageObject';
 
 class ArticlePageObject extends PageObject {
   get newArticleLink() {
-    return cy.getByDataCy('new-article-link');
+    return cy.getByDataQa('new-article-link');
   }
 
   get articleTitleField() {
-    return cy.getByDataCy('article-title');
+    return cy.getByDataQa('article-title');
   }
 
   get articleAboutField() {
-    return cy.getByDataCy('article-about');
+    return cy.getByDataQa('article-about');
   }
 
   get articleContentField() {
-    return cy.getByDataCy('article-content');
+    return cy.getByDataQa('article-content');
   }
 
   get articleTagsField() {
-    return cy.getByDataCy('article-tags');
+    return cy.getByDataQa('article-tags');
   }
 
   get publishArticleBtn() {
-    return cy.getByDataCy('publish-article-btn');
+    return cy.getByDataQa('publish-article-btn');
   }
 
   get editArticleBtn() {
-    return cy.getByDataCy('edit-article-btn');
+    return cy.getByDataQa('edit-article-btn');
   }
 
   get deleteArticleBtn() {
-    return cy.getByDataCy('delete-article-btn');
+    return cy.getByDataQa('delete-article-btn');
   }
 
   get articleTitle() {
-    return cy.getByDataCy('article-title-display');
+    return cy.getByDataQa('article-title-display');
   }
 
   get articleContent() {
-    return cy.getByDataCy('article-content-display');
+    return cy.getByDataQa('article-content-display');
+  }
+
+  get errorMessages() {
+    return cy.getByDataQa('error-messages');
+  }
+
+  visitNewArticle() {
+    cy.visit('/#/editor');
+    return this;
   }
 
   clickNewArticle() {

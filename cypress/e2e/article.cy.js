@@ -12,86 +12,70 @@ const homePage = new HomePageObject();
 describe('Article Management', () => {
   let user;
   let articleData;
+  let updatedArticleData;
 
-  beforeEach(() => {
+  before(() => {
     cy.task('db:clear');
 
     cy.task('generateUser').then((generateUser) => {
       user = generateUser;
-      cy.register(user.email, user.username, user.password);
+      return cy.register(user.email, user.username, user.password);
     });
 
-    articleData = {
-      title: `Test Article ${Date.now()}`,
-      about: 'This is a test article',
-      content: 'This is the content of the test article',
-      tags: ['test', 'cypress', 'e2e']
-    };
+    cy.task('generateArticle').then((generateArticle) => {
+      articleData = generateArticle;
+    });
+    cy.task('generateArticle').then((generateArticle) => {
+      updatedArticleData = generateArticle;
+    });
   });
 
-  it('should be created using New Article form', () => {
+  beforeEach(() => {
     signInPage.visit();
     signInPage.typeEmail(user.email);
     signInPage.typePassword(user.password);
     signInPage.clickSignInBtn();
+  });
 
-    articlePage.clickNewArticle();
-
+  it('should create a new article with valid data', () => {
+    articlePage.visitNewArticle();
     articlePage.typeTitle(articleData.title);
     articlePage.typeAbout(articleData.about);
     articlePage.typeContent(articleData.content);
     articlePage.typeTags(articleData.tags.join(' '));
-
     articlePage.clickPublishArticle();
 
     articlePage.articleTitle.should('contain', articleData.title);
     articlePage.articleContent.should('contain', articleData.content);
   });
 
-  it('should be edited using Edit button', () => {
-    const updatedContent = 'Updated article content';
-
-    signInPage.visit();
-    signInPage.typeEmail(user.email);
-    signInPage.typePassword(user.password);
-    signInPage.clickSignInBtn();
-
+  it('should edit an existing article', () => {
     cy.createArticle(articleData);
-
     articlePage.clickEditArticle();
-    articlePage.articleContentField.clear().type(updatedContent);
+    articlePage.typeTitle(updatedArticleData.title);
+    articlePage.typeAbout(updatedArticleData.about);
+    articlePage.typeContent(updatedArticleData.content);
     articlePage.clickPublishArticle();
 
-    articlePage.articleContent.should('contain', updatedContent);
+    articlePage.articleTitle.should('contain', updatedArticleData.title);
+    articlePage.articleContent.should('contain', updatedArticleData.content);
   });
 
-  it('should be deleted using Delete button', () => {
-    signInPage.visit();
-    signInPage.typeEmail(user.email);
-    signInPage.typePassword(user.password);
-    signInPage.clickSignInBtn();
-
+  it('should delete an article', () => {
     cy.createArticle(articleData);
-
     articlePage.clickDeleteArticle();
-
     cy.url().should('not.include', '/article/');
     homePage.articleList.should('not.contain', articleData.title);
   });
 
   it('should validate required fields when creating an article', () => {
-    signInPage.visit();
-    signInPage.typeEmail(user.email);
-    signInPage.typePassword(user.password);
-    signInPage.clickSignInBtn();
-
-    articlePage.clickNewArticle();
+    articlePage.visitNewArticle();
     articlePage.clickPublishArticle();
 
-    cy.get('.error-messages')
+    articlePage.errorMessages
       .should('be.visible')
-      .and('contain', 'title can\'t be blank')
-      .and('contain', 'description can\'t be blank')
-      .and('contain', 'body can\'t be blank');
+      .and('contain', `title can't be blank`)
+      .and('contain', `description can't be blank`)
+      .and('contain', `body can't be blank`);
   });
 });

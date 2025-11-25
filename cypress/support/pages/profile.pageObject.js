@@ -2,35 +2,56 @@ import PageObject from './PageObject';
 
 class ProfilePageObject extends PageObject {
   get followButton() {
-    return cy.getByDataCy('follow-button');
+    return cy.getByDataQa('follow-button');
   }
 
   get unfollowButton() {
-    return cy.getByDataCy('unfollow-button');
+    return cy.getByDataQa('unfollow-button');
   }
 
   get userInfo() {
-    return cy.getByDataCy('user-info');
+    return cy.getByDataQa('user-info');
   }
 
   get userArticles() {
-    return cy.getByDataCy('user-articles');
+    return cy.getByDataQa('user-articles');
   }
 
   get favoritedArticles() {
-    return cy.getByDataCy('favorited-articles');
+    return cy.getByDataQa('favorited-articles');
+  }
+
+  get userHeader() {
+    return cy.getByDataQa('user-header');
+  }
+
+  get userBio() {
+    return cy.getByDataQa('user-bio');
   }
 
   clickFollowButton() {
     this.followButton.click();
+    return this;
   }
 
   clickUnfollowButton() {
     this.unfollowButton.click();
+    return this;
   }
 
   visitUserProfile(username) {
     cy.visit(`/profile/${username}`);
+    return this;
+  }
+
+  verifyUserInfoContains(text) {
+    this.userInfo.should('contain', text);
+    return this;
+  }
+
+  verifyUserHeaderContains(username) {
+    this.userHeader.should('contain', username);
+    return this;
   }
 }
 
